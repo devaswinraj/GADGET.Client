@@ -11,7 +11,7 @@ let UpdateProduct = () => {
 
     let { id } = useParams()
 
-    let [formData, setFormData] = useState({
+    let [data, setData] = useState({
 
         image: "",
         productName: "",
@@ -39,7 +39,7 @@ let UpdateProduct = () => {
                     }
                 })
 
-                setFormData(response.data.data);
+                setData(response.data.data);
 
 
 
@@ -58,12 +58,12 @@ let UpdateProduct = () => {
 
     let getValue = (e) => {
 
-        let { name, type, value, checked } = e.target
+        let { name, type, value, checked, files } = e.target
 
-        setFormData({
+        setData({
 
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
+            ...Data,
+            [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value
         })
 
     }
@@ -74,13 +74,27 @@ let UpdateProduct = () => {
 
         let token = localStorage.getItem('token')
 
+
+        let formData = new FormData();
+
+        formData.append("image", data.image)
+        formData.append("productName", data.productName)
+        formData.append("category", data.category)
+        formData.append("price", data.price)
+        formData.append("brand", data.brand)
+        formData.append("stock", data.stock)
+        formData.append("discount", data.discount)
+        formData.append("isNewArrival", data.isNewArrival)
+
         try {
 
             let response = await api.put(`/products/${id}`, formData, {
 
                 headers: {
 
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`,
+
+                    "Content-Type": "multipart/form-data"
                 }
             })
 
@@ -137,7 +151,7 @@ let UpdateProduct = () => {
                                 name="productName"
                                 type="text"
                                 placeholder="Enter Product Name"
-                                value={formData.productName}
+                                value={data.productName}
                                 onChange={getValue}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -153,7 +167,7 @@ let UpdateProduct = () => {
                                 name="category"
                                 type="text"
                                 placeholder="Enter Category"
-                                value={formData.category}
+                                value={data.category}
                                 onChange={getValue}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -171,7 +185,7 @@ let UpdateProduct = () => {
                                     name="price"
                                     type="number"
                                     placeholder="Enter Price"
-                                    value={formData.price}
+                                    value={data.price}
                                     onChange={getValue}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -186,7 +200,7 @@ let UpdateProduct = () => {
                                     name="brand"
                                     type="text"
                                     placeholder="Enter Brand"
-                                    value={formData.brand}
+                                    value={data.brand}
                                     onChange={getValue}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -206,7 +220,7 @@ let UpdateProduct = () => {
                                     name="stock"
                                     type="number"
                                     placeholder="Enter Stock"
-                                    value={formData.stock}
+                                    value={data.stock}
                                     onChange={getValue}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -221,7 +235,7 @@ let UpdateProduct = () => {
                                     name="discount"
                                     type="number"
                                     placeholder="Enter Discount"
-                                    value={formData.discount}
+                                    value={data.discount}
                                     onChange={getValue}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -239,7 +253,6 @@ let UpdateProduct = () => {
                                 name="image"
                                 type="file"
                                 placeholder="https://example.com/image.jpg"
-                                value={formData.image}
                                 onChange={getValue}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
@@ -251,7 +264,7 @@ let UpdateProduct = () => {
                             <input
                                 name="isNewArrival"
                                 type="checkbox"
-                                checked={formData.isNewArrival}
+                                checked={data.isNewArrival}
                                 onChange={getValue}
                                 className="w-5 h-5 accent-blue-600"
                             />
