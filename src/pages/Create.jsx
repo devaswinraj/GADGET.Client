@@ -1,6 +1,9 @@
-import { useState } from "react"
+
 import { useNavigate, Link } from "react-router-dom"
 import api from "../api/axios"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useForm } from "react-hook-form"
+import createProductSchema from "../validation/CreateProductSchema"
 
 
 
@@ -8,50 +11,34 @@ import api from "../api/axios"
 let CreateProduct = () => {
 
 
-    let [data, setData] = useState({
-
-        image: "",
-        productName: "",
-        category: "",
-        price: "",
-        brand: "",
-        stock: "",
-        discount: "",
-        isNewArrival: false,
+    let { register, handleSubmit, formState: { errors }, } = useForm({
+        resolver: yupResolver(createProductSchema)
     })
+
 
     let navigate = useNavigate()
 
 
-    let getValue = (e) => {
 
 
-        let { name, value, checked, type, files } = e.target
 
-        setData({
 
-            ...data,
-            [name]: type === 'checkbox' ? checked : type === "file" ? files[0] : value
-        })
+    let sendData = async (formDataValue) => {
 
-    }
 
-    let sendData = async (e) => {
-
-        e.preventDefault();
 
         let token = localStorage.getItem('token');
 
         let formData = new FormData();
 
-        formData.append("image", data.image)
-        formData.append("productName", data.productName)
-        formData.append("category", data.category)
-        formData.append("price", data.price)
-        formData.append("brand", data.brand)
-        formData.append("stock", data.stock)
-        formData.append("discount", data.discount)
-        formData.append("isNewArrival", data.isNewArrival)
+        formData.append("image", formDataValue.image[0])
+        formData.append("productName", formDataValue.productName)
+        formData.append("category", formDataValue.category)
+        formData.append("price", formDataValue.price)
+        formData.append("brand", formDataValue.brand)
+        formData.append("stock", formDataValue.stock)
+        formData.append("discount", formDataValue.discount)
+        formData.append("isNewArrival", formDataValue.isNewArrival)
 
         try {
 
@@ -66,6 +53,7 @@ let CreateProduct = () => {
 
             })
 
+
             alert(response.data.message);
 
 
@@ -76,6 +64,7 @@ let CreateProduct = () => {
         } catch (error) {
 
             alert(error.response?.data?.errors?.join("\n") || error.message);
+
 
 
 
@@ -110,7 +99,7 @@ let CreateProduct = () => {
                         Fill in the product information below.
                     </p>
 
-                    <form onSubmit={sendData} className="space-y-6">
+                    <form onSubmit={handleSubmit(sendData)} className="space-y-6">
 
                         {/* Product Name */}
                         <div>
@@ -122,10 +111,10 @@ let CreateProduct = () => {
                                 name="productName"
                                 type="text"
                                 placeholder="Enter product name"
-                                value={data.productName}
-                                onChange={getValue}
+                                {...register("productName")}
                                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
+                            <p className="text-red-500">{errors.productName?.message}</p>
                         </div>
 
                         {/* Category */}
@@ -138,10 +127,10 @@ let CreateProduct = () => {
                                 name="category"
                                 type="text"
                                 placeholder="Enter category"
-                                value={data.category}
-                                onChange={getValue}
+                                {...register("category")}
                                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
+                            <p className="text-red-500">{errors.category?.message}</p>
                         </div>
 
                         {/* Price & Brand */}
@@ -156,10 +145,10 @@ let CreateProduct = () => {
                                     name="price"
                                     type="number"
                                     placeholder="Enter price"
-                                    value={data.price}
-                                    onChange={getValue}
+                                    {...register("price")}
                                     className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
+                                <p className="text-red-500">{errors.price?.message}</p>
                             </div>
 
                             <div>
@@ -171,10 +160,10 @@ let CreateProduct = () => {
                                     name="brand"
                                     type="text"
                                     placeholder="Enter brand"
-                                    value={data.brand}
-                                    onChange={getValue}
+                                    {...register("brand")}
                                     className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
+                                <p className="text-red-500">{errors.brand?.message}</p>
                             </div>
 
                         </div>
@@ -191,10 +180,10 @@ let CreateProduct = () => {
                                     name="stock"
                                     type="number"
                                     placeholder="Enter stock"
-                                    value={data.stock}
-                                    onChange={getValue}
+                                    {...register("stock")}
                                     className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
+                                <p className="text-red-500">{errors.stock?.message}</p>
                             </div>
 
                             <div>
@@ -206,10 +195,10 @@ let CreateProduct = () => {
                                     name="discount"
                                     type="number"
                                     placeholder="Enter discount"
-                                    value={data.discount}
-                                    onChange={getValue}
+                                    {...register("discount")}
                                     className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                 />
+                                <p className="text-red-500">{errors.discount?.message}</p>
                             </div>
 
                         </div>
@@ -224,9 +213,10 @@ let CreateProduct = () => {
                                 name="image"
                                 type="file"
                                 placeholder="https://example.com/image.jpg"
-                                onChange={getValue}
+                                {...register("image")}
                                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
+                            <p className="text-red-500">{errors.image?.message}</p>
                         </div>
 
                         {/* Checkbox */}
@@ -235,8 +225,7 @@ let CreateProduct = () => {
                             <input
                                 name="isNewArrival"
                                 type="checkbox"
-                                checked={data.isNewArrival}
-                                onChange={getValue}
+                                {...register("isNewArrival")}
                                 className="w-5 h-5 accent-blue-600"
                             />
 
@@ -262,6 +251,7 @@ let CreateProduct = () => {
 
         </>
     )
+
 }
 
 export default CreateProduct

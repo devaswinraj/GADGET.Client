@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import api from "../api/axios"
 import { Link } from "react-router-dom";
+import Loading from "../components/Loading";
 
 
 
@@ -10,6 +11,7 @@ let ProductList = () => {
     let [products, setProducts] = useState([]);
     let [del, setDel] = useState(false);
 
+    let { loading, setLoading } = useState(true)
 
 
     useEffect(() => {
@@ -35,6 +37,9 @@ let ProductList = () => {
 
                 console.log(error.response);
 
+            } finally {
+
+                setLoading(false);
             }
 
         }
@@ -42,6 +47,11 @@ let ProductList = () => {
         getProducts();
 
     }, [del]);
+
+    if (loading) {
+
+        return <Loading text="Loading Products..." />
+    }
 
     let deleteProduct = async (id) => {
 
@@ -148,14 +158,20 @@ let ProductList = () => {
                             className="bg-white rounded-3xl border border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
                         >
 
-                            {/* Image */}
 
-                            <div className="bg-gradient-to-br from-cyan-50 via-white to-blue-50 flex justify-center items-center p-8">
+                            <div className="relative bg-gradient-to-br from-cyan-50 via-white to-blue-50 flex justify-center items-center p-8">
+
+                                {/* New Arrival Badge */}
+                                {product.isNewArrival && (
+                                    <span className="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg uppercase tracking-wide">
+                                        ✨ New Arrival
+                                    </span>
+                                )}
 
                                 <img
                                     src={`http://localhost:1000/images/${product.image}`}
                                     alt={product.productName}
-                                    className="h-52 w-52 md:h-60 md:w-60 object-contain hover:scale-110 transition duration-500"
+                                    className="w-full h-48 object-contain bg-white"
                                 />
 
                             </div>

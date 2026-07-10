@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useNavigate, useParams, Link } from "react-router-dom"
 import api from "../api/axios"
+import { useForm } from "react-hook-form"
+import { yupResolver } from "@hookform/resolvers/yup"
+import updateProductSchema from "../validation/UpdateProductSchema"
 
 
 
@@ -11,16 +14,8 @@ let UpdateProduct = () => {
 
     let { id } = useParams()
 
-    let [data, setData] = useState({
-
-        image: "",
-        productName: "",
-        category: "",
-        price: "",
-        brand: "",
-        stock: "",
-        discount: "",
-        isNewArrival: false,
+    let { register, handleSubmit, reset, formState: { errors }, } = useForm({
+        resolver: yupResolver(updateProductSchema)
     })
 
     useEffect(() => {
@@ -39,7 +34,7 @@ let UpdateProduct = () => {
                     }
                 })
 
-                setData(response.data.data);
+                reset(response.data.data);
 
 
 
@@ -56,35 +51,24 @@ let UpdateProduct = () => {
     }, [id])
 
 
-    let getValue = (e) => {
 
-        let { name, type, value, checked, files } = e.target
 
-        setData({
+    let sendData = async (formDataValue) => {
 
-            ...Data,
-            [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value
-        })
-
-    }
-
-    let sendData = async (e) => {
-
-        e.preventDefault();
 
         let token = localStorage.getItem('token')
 
 
         let formData = new FormData();
 
-        formData.append("image", data.image)
-        formData.append("productName", data.productName)
-        formData.append("category", data.category)
-        formData.append("price", data.price)
-        formData.append("brand", data.brand)
-        formData.append("stock", data.stock)
-        formData.append("discount", data.discount)
-        formData.append("isNewArrival", data.isNewArrival)
+        formData.append("image", formDataValue.image[0])
+        formData.append("productName", formDataValue.productName)
+        formData.append("category", formDataValue.category)
+        formData.append("price", formDataValue.price)
+        formData.append("brand", formDataValue.brand)
+        formData.append("stock", formDataValue.stock)
+        formData.append("discount", formDataValue.discount)
+        formData.append("isNewArrival", formDataValue.isNewArrival)
 
         try {
 
@@ -139,7 +123,7 @@ let UpdateProduct = () => {
                         Edit the product details and save your changes.
                     </p>
 
-                    <form onSubmit={sendData} className="space-y-6">
+                    <form onSubmit={handleSubmit(sendData)} className="space-y-6">
 
                         {/* Product Name */}
                         <div>
@@ -151,10 +135,10 @@ let UpdateProduct = () => {
                                 name="productName"
                                 type="text"
                                 placeholder="Enter Product Name"
-                                value={data.productName}
-                                onChange={getValue}
+                                {...register("productName")}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
+                            <p className="text-red-500">{errors.productName?.message}</p>
                         </div>
 
                         {/* Category */}
@@ -167,10 +151,10 @@ let UpdateProduct = () => {
                                 name="category"
                                 type="text"
                                 placeholder="Enter Category"
-                                value={data.category}
-                                onChange={getValue}
+                                {...register("category")}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
+                            <p className="text-red-500">{errors.category?.message}</p>
                         </div>
 
                         {/* Price & Brand */}
@@ -185,10 +169,10 @@ let UpdateProduct = () => {
                                     name="price"
                                     type="number"
                                     placeholder="Enter Price"
-                                    value={data.price}
-                                    onChange={getValue}
+                                    {...register("price")}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
+                                <p className="text-red-500">{errors.price?.message}</p>
                             </div>
 
                             <div>
@@ -200,10 +184,10 @@ let UpdateProduct = () => {
                                     name="brand"
                                     type="text"
                                     placeholder="Enter Brand"
-                                    value={data.brand}
-                                    onChange={getValue}
+                                    {...register("brand")}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
+                                <p className="text-red-500">{errors.brand?.message}</p>
                             </div>
 
                         </div>
@@ -220,10 +204,10 @@ let UpdateProduct = () => {
                                     name="stock"
                                     type="number"
                                     placeholder="Enter Stock"
-                                    value={data.stock}
-                                    onChange={getValue}
+                                    {...register("stock")}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
+                                <p className="text-red-500">{errors.stock?.message}</p>
                             </div>
 
                             <div>
@@ -235,10 +219,10 @@ let UpdateProduct = () => {
                                     name="discount"
                                     type="number"
                                     placeholder="Enter Discount"
-                                    value={data.discount}
-                                    onChange={getValue}
+                                    {...register("discount")}
                                     className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
+                                <p className="text-red-500">{errors.discount?.message}</p>
                             </div>
 
                         </div>
@@ -253,7 +237,7 @@ let UpdateProduct = () => {
                                 name="image"
                                 type="file"
                                 placeholder="https://example.com/image.jpg"
-                                onChange={getValue}
+                                {...register("image")}
                                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
@@ -264,8 +248,7 @@ let UpdateProduct = () => {
                             <input
                                 name="isNewArrival"
                                 type="checkbox"
-                                checked={data.isNewArrival}
-                                onChange={getValue}
+                                {...register("isNewArrival")}
                                 className="w-5 h-5 accent-blue-600"
                             />
 

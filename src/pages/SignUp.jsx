@@ -1,43 +1,29 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import api from "../api/axios"
+
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import signUpSchema from "../validation/SignUpSchema";
+
 
 
 
 
 let SignUp = () => {
 
-  let [formData, setFormData] = useState({
-
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  let { register, handleSubmit, formState: { errors }, } = useForm({
+    resolver: yupResolver(signUpSchema)
   })
 
   let navigate = useNavigate()
 
-  let getValue = (e) => {
+ 
 
-    setFormData({
+  let sendData = async (data) => {
 
-      ...formData,
-      [e.target.name]: e.target.value
-    })
-  }
-
-  let sendData = async (e) => {
-
-    e.preventDefault()
-
-    if (formData.confirmPassword !== formData.password) {
-
-      alert("password and confirm password do not match")
-      return;
-    }
-
+    
     try {
-      let response = await api.post('/users/signUp', formData)
+      let response = await api.post('/users/signUp', data)
 
       alert(response.data.message)
 
@@ -123,7 +109,7 @@ let SignUp = () => {
             Fill in the details below to create your account.
           </p>
 
-          <form onSubmit={sendData} className="space-y-5">
+          <form onSubmit={handleSubmit(sendData)} className="space-y-5">
 
             <div>
               <label className="block mb-2 font-semibold text-gray-700">
@@ -134,10 +120,10 @@ let SignUp = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                value={formData.name}
-                onChange={getValue}
+                {...register("name")}
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
+              <p className="text-red-500">{errors.name?.message}</p>
             </div>
 
             <div>
@@ -149,10 +135,10 @@ let SignUp = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-                value={formData.email}
-                onChange={getValue}
+                {...register("email")}
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
+              <p className="text-red-500">{errors.email?.message}</p>
             </div>
 
             <div>
@@ -164,10 +150,10 @@ let SignUp = () => {
                 type="password"
                 name="password"
                 placeholder="Enter your password"
-                value={formData.password}
-                onChange={getValue}
+                {...register("password")}
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
+              <p className="text-red-500">{errors.password?.message}</p>
             </div>
 
             <div>
@@ -179,10 +165,10 @@ let SignUp = () => {
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirm your password"
-                value={formData.confirmPassword}
-                onChange={getValue}
+                {...register("confirmPassword")}
                 className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
+              <p className="text-red-500">{errors.confirmPassword?.message}</p>
             </div>
 
             <button
