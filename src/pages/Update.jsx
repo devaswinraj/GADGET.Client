@@ -1,9 +1,10 @@
-import { useEffect } from "react"
-import { useNavigate, useParams, Link } from "react-router-dom"
-import api from "../api/axios"
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import updateProductSchema from "../validation/UpdateProductSchema"
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import api from "../api/axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import updateProductSchema from "../validation/UpdateProductSchema";
+import Loading from "../components/Loading";
 
 
 
@@ -13,6 +14,8 @@ let UpdateProduct = () => {
 
 
     let { id } = useParams()
+    let [loading, setLoading] = useState(true);
+    let [updating, setUpdating] = useState(false);
 
     let { register, handleSubmit, reset, formState: { errors }, } = useForm({
         resolver: yupResolver(updateProductSchema)
@@ -21,6 +24,7 @@ let UpdateProduct = () => {
     useEffect(() => {
 
         let getProduct = async () => {
+
 
             let token = localStorage.getItem('token')
 
@@ -42,6 +46,9 @@ let UpdateProduct = () => {
 
                 console.log(error.response);
 
+            } finally {
+
+                setLoading(false);
             }
 
         }
@@ -50,11 +57,18 @@ let UpdateProduct = () => {
 
     }, [id])
 
+    if (loading) {
+
+        return <Loading text="Getting Product..." />
+    }
+
 
 
 
     let sendData = async (formDataValue) => {
 
+
+        setUpdating(true)
 
         let token = localStorage.getItem('token')
 
@@ -92,6 +106,9 @@ let UpdateProduct = () => {
             alert(error.response?.data?.errors?.join("\n") || error.message)
 
 
+        } finally {
+
+            setUpdating(false);
         }
 
 
@@ -260,10 +277,11 @@ let UpdateProduct = () => {
 
                         {/* Update Button */}
                         <button
+                            disabled={updating}
                             type="submit"
                             className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl text-lg font-semibold shadow-lg transition duration-300 hover:shadow-xl"
                         >
-                            Update Product
+                            {updating ? "Updating..." : "Update Product"}
                         </button>
 
                     </form>

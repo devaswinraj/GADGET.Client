@@ -4,6 +4,8 @@ import api from "../api/axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import signUpSchema from "../validation/SignUpSchema";
+import Loading from "../components/Loading";
+import { useState } from "react";
 
 
 
@@ -11,17 +13,20 @@ import signUpSchema from "../validation/SignUpSchema";
 
 let SignUp = () => {
 
+  let [loading, setLoading] = useState(false);
+
   let { register, handleSubmit, formState: { errors }, } = useForm({
     resolver: yupResolver(signUpSchema)
   })
 
   let navigate = useNavigate()
 
- 
+
 
   let sendData = async (data) => {
 
-    
+    setLoading(true);
+
     try {
       let response = await api.post('/users/signUp', data)
 
@@ -35,6 +40,9 @@ let SignUp = () => {
       alert(error.response?.data?.errors?.[0] || error.response?.data?.message || error.message)
 
 
+    } finally {
+
+      setLoading(false);
     }
 
   }
@@ -172,10 +180,11 @@ let SignUp = () => {
             </div>
 
             <button
+              disabled={loading}
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition duration-300"
             >
-              Create Account
+              {loading ? "Signing..." : "Create Account"}
             </button>
 
             <p className="text-center text-gray-600">

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import api from "../api/axios"
+import { useEffect, useState } from "react";
+import api from "../api/axios";
 import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
 
@@ -11,7 +11,7 @@ let ProductList = () => {
     let [products, setProducts] = useState([]);
     let [del, setDel] = useState(false);
 
-    let { loading, setLoading } = useState(true)
+    let [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -51,6 +51,7 @@ let ProductList = () => {
     if (loading) {
 
         return <Loading text="Loading Products..." />
+
     }
 
     let deleteProduct = async (id) => {

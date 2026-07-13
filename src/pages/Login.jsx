@@ -1,14 +1,18 @@
-import { yupResolver } from "@hookform/resolvers/yup"
-import api from "../api/axios"
-import { useForm } from "react-hook-form"
-import { Link, useNavigate } from "react-router-dom"
-import loginSchema from "../validation/LoginSchema"
+import { yupResolver } from "@hookform/resolvers/yup";
+import api from "../api/axios";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import loginSchema from "../validation/LoginSchema";
+import Loading from "../components/Loading";
+import { useState } from "react";
 
 
 
 
 
 let Login = () => {
+
+  let [loading, setLoading] = useState(false);
 
   let { register, handleSubmit, formState: { errors }, } = useForm({
     resolver: yupResolver(loginSchema)
@@ -18,6 +22,8 @@ let Login = () => {
 
 
   let sendData = async (data) => {
+
+    setLoading(true);
 
 
     try {
@@ -34,7 +40,12 @@ let Login = () => {
 
       alert(error.response?.data?.errors?.[0] || error.response?.data?.message || error.message)
 
+    } finally {
+
+      setLoading(false);
+
     }
+
   }
   return (
 
@@ -130,7 +141,7 @@ let Login = () => {
                 type="email"
                 name="email"
                 placeholder="Enter your email"
-               {...register("email")}
+                {...register("email")}
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-red-500">{errors.email?.message}</p>
@@ -145,7 +156,7 @@ let Login = () => {
                 type="password"
                 name="password"
                 placeholder="Enter your password"
-               {...register("password")}
+                {...register("password")}
                 className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <p className="text-red-500">{errors.password?.message}</p>
@@ -161,10 +172,12 @@ let Login = () => {
             </div>
 
             <button
+              disabled={loading}
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition"
             >
-              Login
+
+              {loading ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-center text-gray-600 mt-6">

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
-import api from "../api/axios"
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import api from "../api/axios";
 import {
     ArrowLeft,
     Package,
@@ -11,6 +11,7 @@ import {
     ShoppingCart,
     Pencil,
 } from "lucide-react";
+import Loading from "../components/Loading";
 
 
 
@@ -20,7 +21,8 @@ let Details = () => {
 
     let { id } = useParams()
 
-    let [product, setProduct] = useState({})
+    let [product, setProduct] = useState({});
+    let [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -48,6 +50,9 @@ let Details = () => {
                 console.log(error.response);
 
 
+            } finally {
+
+                setLoading(false);
             }
 
         }
@@ -55,6 +60,13 @@ let Details = () => {
         getProduct();
 
     }, [id]);
+
+    if (loading) {
+
+        return <Loading text="Loading Product..." />
+
+    }
+
 
 
     return (

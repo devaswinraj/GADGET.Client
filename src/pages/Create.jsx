@@ -1,14 +1,17 @@
 
-import { useNavigate, Link } from "react-router-dom"
-import api from "../api/axios"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { useForm } from "react-hook-form"
-import createProductSchema from "../validation/CreateProductSchema"
+import { useNavigate, Link } from "react-router-dom";
+import api from "../api/axios";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { set, useForm } from "react-hook-form";
+import createProductSchema from "../validation/CreateProductSchema";
+import { useState } from "react";
 
 
 
 
 let CreateProduct = () => {
+
+    let [loading, setLoading] = useState(false)
 
 
     let { register, handleSubmit, formState: { errors }, } = useForm({
@@ -25,6 +28,7 @@ let CreateProduct = () => {
 
     let sendData = async (formDataValue) => {
 
+        setLoading(true);
 
 
         let token = localStorage.getItem('token');
@@ -66,9 +70,9 @@ let CreateProduct = () => {
             alert(error.response?.data?.errors?.join("\n") || error.message);
 
 
+        } finally {
 
-
-
+            setLoading(false);
         }
 
 
@@ -237,10 +241,11 @@ let CreateProduct = () => {
 
                         {/* Submit Button */}
                         <button
+                            disabled={loading}
                             type="submit"
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl text-lg font-semibold transition duration-300 shadow-lg hover:shadow-xl"
                         >
-                            Create Product
+                            {loading ? "Creating..." : "Create Product"}
                         </button>
 
                     </form>
