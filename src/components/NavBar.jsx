@@ -5,7 +5,7 @@ let NavBar = () => {
 
     let navigate = useNavigate();
 
-    let location = useLocation()
+    let location = useLocation();
 
     let logOut = () => {
 

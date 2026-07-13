@@ -8,6 +8,7 @@ import ProductList from './pages/Products';
 import Details from './pages/Details';
 import CreateProduct from './pages/Create';
 import UpdateProduct from './pages/Update';
+import PrivateRoute from './components/PrivateRoute';
 
 
 
@@ -34,15 +35,15 @@ let App = () => {
 
                 <Route path={"/signUp"} element={<SignUp />} />
 
-                <Route path={"/"} element={<Home />} />
+                <Route path={"/"} element={<PrivateRoute> <Home /> </PrivateRoute>} />
 
-                <Route path={"/products"} element={<ProductList />} />
+                <Route path={"/products"} element={<PrivateRoute> <ProductList /> </PrivateRoute>} />
 
-                <Route path={"/products/:id"} element={<Details />} />
+                <Route path={"/products/:id"} element={<PrivateRoute> <Details /> </PrivateRoute>} />
 
-                <Route path={"/products/create"} element={<CreateProduct />} />
+                <Route path={"/products/create"} element={<PrivateRoute> <CreateProduct /> </PrivateRoute>} />
 
-                <Route path={"/products/update/:id"} element={<UpdateProduct />} />
+                <Route path={"/products/update/:id"} element={<PrivateRoute> <UpdateProduct /> </PrivateRoute>} />
 
 
             </Routes>
