@@ -5,8 +5,10 @@ import Loading from "../components/Loading";
 
 
 
+
 let ProductList = () => {
 
+    let api_url = import.meta.env.VITE_API_URL
 
     let [products, setProducts] = useState([]);
     let [del, setDel] = useState(false);
@@ -170,7 +172,7 @@ let ProductList = () => {
                                 )}
 
                                 <img
-                                    src={`http://localhost:1000/images/${product.image}`}
+                                    src={`${api_url}/images/${product.image}`}
                                     alt={product.productName}
                                     className="w-full h-48 object-contain bg-white"
                                 />

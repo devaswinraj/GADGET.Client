@@ -18,6 +18,8 @@ import Loading from "../components/Loading";
 
 let Details = () => {
 
+    let api_url = import.meta.env.VITE_API_URL
+
 
     let { id } = useParams()
 
@@ -104,7 +106,7 @@ let Details = () => {
 
                             <img
                                 src={
-                                    `http://localhost:1000/images/${product.image}`
+                                    `${api_url}/images/${product.image}`
                                 }
                                 alt={product.productName}
                                 className="w-full max-w-md h-[420px] object-contain hover:scale-110 transition duration-500"
