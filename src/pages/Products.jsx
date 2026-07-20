@@ -172,7 +172,7 @@ let ProductList = () => {
                                 )}
 
                                 <img
-                                    src={`${api_url}/images/${product.image}`}
+                                    src={"product.image"}
                                     alt={product.productName}
                                     className="w-full h-48 object-contain bg-white"
                                 />
