@@ -42,7 +42,7 @@ let NavBar = () => {
                                     GADGET
                                 </span>{" "}
                                 <span className="text-cyan-400">
-                                    CART
+                                    POINT
                                 </span>
                             </h1>
                         </Link>
