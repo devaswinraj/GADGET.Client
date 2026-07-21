@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import signUpSchema from "../validation/SignUpSchema";
 import Loading from "../components/Loading";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 
 
@@ -30,14 +31,25 @@ let SignUp = () => {
     try {
       let response = await api.post('/users/signUp', data)
 
-      alert(response.data.message)
+      await Swal.fire({
+        title: "Success!",
+        text: response.data.message,
+        icon: "success",
+        confirmButtonText: "Go to Login"
+      });
 
       navigate('/')
 
 
     } catch (error) {
 
-      alert(error.response?.data?.errors?.[0] || error.response?.data?.message || error.message)
+      Swal.fire({
+        title: "Signup Failed!",
+        text: error.response?.data?.errors?.[0] || error.response?.data?.message || error.message || "Something went wrong",
+        icon: "error",
+        confirmButtonText: "Try Again"
+        
+      });
 
 
     } finally {

@@ -105,9 +105,7 @@ let Details = () => {
                             )}
 
                             <img
-                                src={
-                                    "{product.image}"
-                                }
+                                src={product.image}
                                 alt={product.productName}
                                 className="w-full max-w-md h-[420px] object-contain hover:scale-110 transition duration-500"
                             />

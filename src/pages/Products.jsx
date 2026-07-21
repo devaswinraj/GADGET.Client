@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
+import Swal from "sweetalert2";
 
 
 
@@ -60,12 +61,32 @@ let ProductList = () => {
 
         let token = localStorage.getItem('token')
 
-        let isConfirm = window.confirm('Delete This Product')
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to recover this product!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it",
+            cancelButtonText: "Cancel"
 
-        if (!isConfirm) {
+        });
+
+
+        if (!result.isConfirmed) {
 
             return;
         }
+
+        Swal.fire({
+
+            title: "Deleting...",
+            text: "Please wait",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+            
+        });
 
         try {
 
@@ -77,7 +98,17 @@ let ProductList = () => {
                 }
             });
 
-            alert(response.data.message);
+
+
+
+            await Swal.fire({
+
+                title: "Deleted!",
+                text: response.data.message,
+                icon: "success",
+                confirmButtonText: "OK"
+
+            });
 
             setDel(!del);
 
@@ -85,6 +116,14 @@ let ProductList = () => {
 
             console.log(error);
 
+            Swal.fire({
+
+                title: "Error!",
+                text: error.response?.data?.message || "Failed to delete product",
+                icon: "error",
+                confirmButtonText: "OK"
+
+            });
 
         }
     }
@@ -172,7 +211,7 @@ let ProductList = () => {
                                 )}
 
                                 <img
-                                    src={"product.image"}
+                                    src={product.image}
                                     alt={product.productName}
                                     className="w-full h-48 object-contain bg-white"
                                 />

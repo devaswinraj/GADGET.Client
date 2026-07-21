@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import loginSchema from "../validation/LoginSchema";
 import Loading from "../components/Loading";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 
 
@@ -33,12 +34,26 @@ let Login = () => {
 
       navigate('/')
 
-      alert(response.data.message)
+      await Swal.fire({
+
+        title: "Login Successful!",
+        text: response.data.message,
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false
+
+      });
 
     } catch (error) {
 
+      Swal.fire({
 
-      alert(error.response?.data?.errors?.[0] || error.response?.data?.message || error.message)
+        title: "Login Failed!",
+        text: error.response?.data?.errors?.[0] || error.response?.data?.message || error.message || "Invalid email or password",
+        icon: "error",
+        confirmButtonText: "Try Again"
+
+      });
 
     } finally {
 

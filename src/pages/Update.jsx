@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import updateProductSchema from "../validation/UpdateProductSchema";
 import Loading from "../components/Loading";
+import Swal from "sweetalert2";
 
 
 
@@ -96,14 +97,30 @@ let UpdateProduct = () => {
                 }
             })
 
-            alert(response.data.message)
+
+
+            Swal.fire({
+
+                title: "Success!",
+                text: response.data.message,
+                icon: "success",
+                confirmButtonText: "OK"
+            });
 
             navigate('/products')
 
 
         } catch (error) {
 
-            alert(error.response?.data?.errors?.join("\n") || error.message)
+            alert()
+
+            Swal.fire({
+
+                title: "Error!",
+                text: error.response?.data?.errors?.join("\n") || error.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
 
 
         } finally {
